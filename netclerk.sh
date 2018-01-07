@@ -92,7 +92,8 @@ run() {
     fi
 
     # Spot work network, if it does: enable proxy.
-    RET=$(${RUNPATH:-.}/if-on-listed-ssid.sh "${SSID_LIST_WORK}")
+    NETWORK_DESIGNATION="Work"
+    RET=$(${RUNPATH:-.}/if-on-listed-ssid.sh "${SSID_LIST_WORK}" "${NETWORK_DESIGNATION}")
     RC=$?
     write_log "${RET}"
 
@@ -101,13 +102,29 @@ run() {
         echo "Error detected: no config file for if-on-listed-ssid"
         exit 1
     elif [ $RC -eq 0 ]; then
-        write_log "Office Network detected, turning ON proxy"
+        write_log "Office Network detected: turning ON proxy"
         turn_proxy_on
         return
     fi
 
+    # Spot home network, if it does: disable proxy.
+    NETWORK_DESIGNATION="Home"
+    RET=$(${RUNPATH:-.}/if-on-listed-ssid.sh "${SSID_LIST_HOME}" "${NETWORK_DESIGNATION}")
+    RC=$?
+    write_log "${RET}"
+
+    if [ $RC -eq 2 ]; then
+        write_log "Error detected: no config file for if-on-listed-ssid"
+        echo "Error detected: no config file for if-on-listed-ssid"
+        exit 1
+    elif [ $RC -eq 0 ]; then
+        write_log "Home Network detected: turning OFF proxy"
+        turn_proxy_off
+        return
+    fi
+
     # All else
-    write_log "Nothing special detected, turning OFF proxy" 
+    write_log "Other network detected, assuming no proxy: turning OFF proxy" 
     turn_proxy_off
     return
 }

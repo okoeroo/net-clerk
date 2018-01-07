@@ -6,13 +6,29 @@ SCRIPT_DIR="$(cd "$( dirname "$0" )" && pwd)"
 RUNPATH="${SCRIPT_DIR}"
 export RUNPATH
 
-NETSETUP="/usr/sbin/networksetup"
-CNTLM="/usr/local/bin/cntlm"
-CNTLM_CONF="/usr/local/etc/cntlm.conf"
-
 # Custom config file
-CONFIG_FILE="${SCRIPT_DIR}/run.config"
+CONFIG_FILE="${RUNPATH}/run.config"
 . "${CONFIG_FILE}"
+
+
+# Config and checks
+NETSETUP="/usr/sbin/networksetup"
+if [ ! -f "${NETSETUP}" ]; then
+    echo "Can not find ${NETSETUP}. Reinstall MacOS or fake it better"
+    exit 1
+fi
+
+HAVE_CNTLM="yes"
+CNTLM="/usr/local/bin/cntlm"
+if [ ! -f "${CNTLM}" ]; then
+    echo "Can not find ${CNTLM}. Skipping cntlm support and continuing without it. Install cntlm for automated enabling"
+    HAVE_CNTLM="no"
+fi
+CNTLM_CONF="/usr/local/etc/cntlm.conf"
+if [ ! -f "${CNTLM_CONF}" ]; then
+    echo "Can not find ${CNTLM_CONF} for cntlm. Skipping cntlm support and continuing without it. Create a configuration file for cntlm first"
+    HAVE_CNTLM="no"
+fi
 
 
 # Functions
@@ -153,8 +169,10 @@ fi
 while true; do
     run
 
-    # Check proxy active otherwise activate
-    deal_with_proxy_tool
+    if [ ${HAVE_CNTLM} = "yes" ]; then
+        # Check proxy active otherwise activate
+        deal_with_proxy_tool
+    fi
 
     stop_hammertime 14
 

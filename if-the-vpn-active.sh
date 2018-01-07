@@ -1,3 +1,5 @@
+#!/bin/bash
+
 LINE=$(netstat -nr | grep -num 1 "default")
 
 if [[ $LINE == *"utun"* ]]; then

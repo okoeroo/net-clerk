@@ -2,14 +2,17 @@
 
 # Recommended not to touch
 PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-RUNPATH="."
+SCRIPT_DIR="$(cd "$( dirname "$0" )" && pwd)"
+RUNPATH="${SCRIPT_DIR}"
+export RUNPATH
+
 NETSETUP="/usr/sbin/networksetup"
 CNTLM="/usr/local/bin/cntlm"
 CNTLM_CONF="/usr/local/etc/cntlm.conf"
 
-
-# Custom config
-. ${RUNPATH:-.}/run.config
+# Custom config file
+CONFIG_FILE="${SCRIPT_DIR}/run.config"
+. "${CONFIG_FILE}"
 
 
 # Functions

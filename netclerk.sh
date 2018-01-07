@@ -7,7 +7,7 @@ RUNPATH="${SCRIPT_DIR}"
 export RUNPATH
 
 # Custom config file
-CONFIG_FILE="${RUNPATH}/run.config"
+CONFIG_FILE="${RUNPATH}/netclerk.conf"
 . "${CONFIG_FILE}"
 
 
@@ -98,7 +98,7 @@ stop_hammertime() {
 
 run() {
     # Spot VPN to be enabled, if it is: enable proxy.
-    RET=$(${RUNPATH:-.}/if-the-vpn-active.sh)
+    RET=$(${RUNPATH:-.}/netclerk-if-the-vpn-active.sh)
     RC=$?
     write_log "${RET}"
     if [ $RC -eq 0 ]; then
@@ -109,7 +109,7 @@ run() {
 
     # Spot work network, if it does: enable proxy.
     NETWORK_DESIGNATION="Work"
-    RET=$(${RUNPATH:-.}/if-on-listed-ssid.sh "${SSID_LIST_WORK}" "${NETWORK_DESIGNATION}")
+    RET=$(${RUNPATH:-.}/netclerk-if-on-listed-ssid.sh "${SSID_LIST_WORK}" "${NETWORK_DESIGNATION}")
     RC=$?
     write_log "${RET}"
 
@@ -125,7 +125,7 @@ run() {
 
     # Spot home network, if it does: disable proxy.
     NETWORK_DESIGNATION="Home"
-    RET=$(${RUNPATH:-.}/if-on-listed-ssid.sh "${SSID_LIST_HOME}" "${NETWORK_DESIGNATION}")
+    RET=$(${RUNPATH:-.}/netclerk-if-on-listed-ssid.sh "${SSID_LIST_HOME}" "${NETWORK_DESIGNATION}")
     RC=$?
     write_log "${RET}"
 

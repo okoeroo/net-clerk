@@ -10,7 +10,7 @@ LISTFILE="$1"
 NETWORK_DESIGNATION="$2"
 
 
-SSID=$($RUNPATH/get-wifi-SSID.sh)
+SSID=$($RUNPATH/netclerk-get-wifi-SSID.sh)
 cat "${LISTFILE}" | while read LINE_SSID; do 
     if [ "$SSID" = "$LINE_SSID" ]; then
         if [ -z ${NETWORK_DESIGNATION} ]; then

@@ -1,0 +1,11 @@
+SWITCH_SLEEP=5
+STATUS_DUMP_FILE="/tmp/network-state-executor.status"
+
+LAN_SERVICE_NAME="USB 10/100/1000 LAN"
+WLAN_SERVICE_NAME="Wi-Fi"
+PROXY_HTTP_HOST="127.0.0.1"
+PROXY_HTTP_PORT="6565"
+SUDO_USER=${SUDO_USER:-my_default_username}
+
+SSID_LIST_WORK="${RUNPATH:-.}/netclerk-ssid-work.list.default"
+SSID_LIST_HOME="${RUNPATH:-.}/netclerk-ssid-home.list.default"

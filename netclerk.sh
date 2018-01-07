@@ -1,5 +1,11 @@
 #!/bin/bash +x
 
+if [ "$1" = "--test" ]; then
+    RUN_MODE="test"
+else
+    RUN_MODE="normal"
+fi
+
 # Recommended not to touch
 PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 SCRIPT_DIR="$(cd "$( dirname "$0" )" && pwd)"
@@ -37,6 +43,10 @@ check_cntlm() {
 }
 
 write_log() {
+    if [ "$RUN_MODE" = "test" ]; then
+        return 0;
+    fi
+
     echo $* >> ${STATUS_DUMP_FILE}.tmp
 }
 
@@ -49,6 +59,10 @@ flush_log() {
 
 turn_proxy_on() {
     write_log "turn_proxy_on()"
+    if [ "$RUN_MODE" = "test" ]; then
+        echo "Skipping netsetup due to test mode"
+        return 0;
+    fi
 
     # WLAN
     RET=$(${NETSETUP} -setwebproxy       "${WLAN_SERVICE_NAME}" "${PROXY_HTTP_HOST}" "${PROXY_HTTP_PORT}")
@@ -72,6 +86,10 @@ turn_proxy_on() {
 
 turn_proxy_off() {
     write_log "turn_proxy_off()"
+    if [ "$RUN_MODE" = "test" ]; then
+        echo "Skipping netsetup due to test mode"
+        return 0;
+    fi
 
     ${NETSETUP} -setwebproxystate        "${WLAN_SERVICE_NAME}" off
     ${NETSETUP} -setsecurewebproxystate  "${WLAN_SERVICE_NAME}" off
@@ -156,6 +174,15 @@ deal_with_proxy_tool() {
 }
 
 ########### Main ##########
+if [ "${RUN_MODE}" = "test" ]; then
+    echo "Running in test mode"
+    run
+
+    # clean
+    exit 0
+fi
+
+
 echo "Network State Executor has started as PID $$ and running as EUID ${EUID}"
 if [ ${EUID} -ne 0 ]; then
     echo "-> Not running with root privileges yet, must elevate rights to control the universe..."

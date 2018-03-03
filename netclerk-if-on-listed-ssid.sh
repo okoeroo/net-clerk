@@ -12,6 +12,9 @@ NETWORK_DESIGNATION="$2"
 
 SSID=$($RUNPATH/netclerk-get-wifi-SSID.sh)
 cat "${LISTFILE}" | while read LINE_SSID; do 
+    if [ "$RUN_MODE" = "debug" ]; then
+        echo "SSID on inspection: $LINE_SSID"
+    fi
     if [ "$SSID" = "$LINE_SSID" ]; then
         if [ -z ${NETWORK_DESIGNATION} ]; then
             echo "SSID detected: $SSID"
